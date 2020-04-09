@@ -103,8 +103,11 @@ class CLI(cmd.Cmd, object):
         output = ['']
         maxlen = {}
         for field in fields:
-            maxlen[field] = max(len(headers[field]),
-                                max([len(row.label[field]) for row in rows]))
+            try:
+                maxlen[field] = max(len(headers[field]),
+                                    max([len(row.label[field]) for row in rows]))
+            except KeyError:
+                maxlen[field] = len(headers[field])
             output.append(headers[field].ljust(maxlen[field]))
         print('  '.join(output))
 
@@ -116,7 +119,10 @@ class CLI(cmd.Cmd, object):
         for row in rows:
             output = ['']
             for field in fields:
-                output.append(row.label[field].ljust(maxlen[field]))
+                try:
+                    output.append(row.label[field].ljust(maxlen[field]))
+                except KeyError:
+                    output.append('N/A'.ljust(maxlen[field]))
             print('  '.join(output))
 
         print

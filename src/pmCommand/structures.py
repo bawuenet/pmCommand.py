@@ -65,13 +65,16 @@ def load_array(et_array, headers, mapping):
     label = {}
 
     for them, us in mapping:
-        et_param = et_array.find("./parameter[@id='%s']" % them)
-        et_value = et_param.find("./value")
+        try:
+            et_param = et_array.find("./parameter[@id='%s']" % them)
+            et_value = et_param.find("./value")
 
-        text[us] = et_value.text
-        label[us] = et_value.get("label")
+            text[us] = et_value.text
+            label[us] = et_value.get("label")
 
-        header = et_param.get("label")
+            header = et_param.get("label")
+        except AttributeError:
+            header = us
         current_header = headers.setdefault(us, header)
         if current_header != header:
             logger.warn("Different header for new row detected: %s -> %s"
